@@ -1,17 +1,20 @@
-(ns bouzuya.clj.zipcode
+
+(ns zipcode.core
+  (:gen-class)
   (:use clojure.core)
   (:use [clojure.java.io :only (reader input-stream output-stream file copy)])
   (:import (java.io FileOutputStream))
   (:import (java.net URL))
   (:import (java.util.zip ZipFile ZipEntry)))
 
-(def script-dir (.getCanonicalFile (.getParentFile (file *file*))))
+(def script-dir (.getCanonicalFile (file "/home/user/zipcode/src/zipcode/")))
 (def base-dir (.getCanonicalFile (file ".")))
 (def zip-dir (file base-dir "zip"))
 (def csv-dir (file base-dir "csv"))
 (def base-url (URL. "http://www.post.japanpost.jp/zipcode/dl/oogaki/zip/"))
 
-(def file-names
+(defn get-file-names
+  []
   (with-open [rdr (reader (file script-dir "file-names.txt"))]
     (doall (line-seq rdr))))
 
@@ -27,7 +30,7 @@
 
 (defn download
   []
-  (doseq [file-name file-names]
+  (doseq [file-name (get-file-names)]
     (with-open [is (.openStream (URL. base-url file-name))
                 os (output-stream (file zip-dir file-name))]
       (copy is os :buffer-size 1024))))
@@ -41,11 +44,9 @@
                     os (output-stream (file csv-dir (.getName entry)))]
           (copy is os :buffer-size 1024))))))
 
-(defn run
-  []
+(defn -main
+  [& args]
   (init)
   (download)
   (unzip))
-
-(run)
 
