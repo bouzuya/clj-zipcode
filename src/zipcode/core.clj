@@ -2,12 +2,12 @@
 (ns zipcode.core
   (:gen-class)
   (:use clojure.core)
-  (:use [clojure.java.io :only (reader input-stream output-stream file copy)])
+  (:use [clojure.java.io :only (resource reader input-stream output-stream file copy)])
   (:import (java.io FileOutputStream))
   (:import (java.net URL))
   (:import (java.util.zip ZipFile ZipEntry)))
 
-(def script-dir (.getCanonicalFile (file "/home/user/zipcode/src/zipcode/")))
+(def file-names-url (resource "zipcode/file-names.txt"))
 (def base-dir (.getCanonicalFile (file ".")))
 (def zip-dir (file base-dir "zip"))
 (def csv-dir (file base-dir "csv"))
@@ -15,7 +15,7 @@
 
 (defn get-file-names
   []
-  (with-open [rdr (reader (file script-dir "file-names.txt"))]
+  (with-open [rdr (reader (file file-names-url))]
     (doall (line-seq rdr))))
 
 (defn init
