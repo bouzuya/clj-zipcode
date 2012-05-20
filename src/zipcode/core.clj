@@ -1,11 +1,10 @@
-
 (ns zipcode.core
   (:gen-class)
   (:use clojure.core)
   (:use [clojure.java.io :only (resource reader input-stream output-stream file copy)])
-  (:import (java.io FileOutputStream))
-  (:import (java.net URL))
-  (:import (java.util.zip ZipFile ZipEntry)))
+  (:import (java.io FileOutputStream)
+           (java.net URL)
+           (java.util.zip ZipEntry ZipFile)))
 
 (def file-names-url (resource "zipcode/file-names.txt"))
 (def base-dir (.getCanonicalFile (file ".")))
